@@ -234,7 +234,7 @@ const CASE_STUDIES: CaseStudyItem[] = [
     },
   },
   {
-    tag: "/01",
+    tag: "/02",
     heading: "Designed the homepage for Flowpilot",
     linkLabel: "Full Case Study (coming soon)",
     description:
@@ -282,7 +282,7 @@ function CaseStudyCard({ item }: { item: CaseStudyItem }) {
             className="flex shrink-0 select-none items-center justify-center gap-1 py-1.5 pr-2"
           >
             <span
-              className="bg-clip-text text-xs font-medium leading-4 tracking-[-0.24px] text-transparent"
+              className="animate-gradient-flow bg-clip-text text-xs font-medium leading-4 tracking-[-0.24px] text-transparent"
               style={{
                 backgroundImage:
                   "linear-gradient(90deg, rgb(207, 250, 157) 0%, rgb(255, 199, 200) 52.404%, rgb(157, 194, 250) 100%)",
