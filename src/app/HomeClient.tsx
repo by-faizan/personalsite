@@ -114,7 +114,7 @@ export default function HomeClient({
       </div>
 
       <div className="relative min-h-[560px] w-full flex-1 overflow-y-auto bg-[#22272f] lg:h-full">
-        <div className="sticky top-0 z-10 flex justify-center bg-[#22272f]/80 pb-4 pt-9 backdrop-blur-sm">
+        <div className="sticky top-0 z-10 flex justify-center bg-[#22272f]/80 pb-1 pt-9 backdrop-blur-sm">
           <div className="flex items-center gap-1 rounded-full bg-[#333b47] p-1">
             <TabButton
               label="Case Studies"
@@ -129,7 +129,7 @@ export default function HomeClient({
           </div>
         </div>
 
-        <AnimatePresence mode="popLayout" custom={direction} initial={false}>
+        <AnimatePresence mode="wait" custom={direction} initial={false}>
           <motion.div
             key={activeTab}
             custom={direction}
@@ -268,7 +268,7 @@ function CaseStudyCard({ item }: { item: CaseStudyItem }) {
               {item.tag}
             </p>
           </div>
-          <h2 className="w-full text-[24px] font-medium capitalize leading-[1.1] tracking-[-0.48px] text-white">
+          <h2 className="w-full text-[20px] font-medium capitalize leading-[1.1] tracking-[-0.48px] text-white lg:text-[24px]">
             {item.heading}
           </h2>
         </div>
@@ -329,7 +329,7 @@ function CaseStudyCard({ item }: { item: CaseStudyItem }) {
 function DesignGallery({ items }: { items: ResolvedGalleryItem[] }) {
   return (
     <div className="px-4 pb-9 pt-4 lg:px-6">
-      <div className="mx-auto flex w-full max-w-[934px] flex-col items-center gap-[17.876px]">
+      <div className="mx-auto flex w-full max-w-[934px] flex-col items-center gap-[12px]">
         {items.map((item) => (
           <div
             key={item.id}
