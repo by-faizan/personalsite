@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import { DM_Mono } from "next/font/google";
-import { useId, useRef, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 
 const dmMono = DM_Mono({ weight: "500", subsets: ["latin"] });
 
@@ -47,20 +47,33 @@ export default function HomeClient({
   const [activeTab, setActiveTab] = useState<Tab>("case-studies");
   const [direction, setDirection] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Remembers where the user left off in each tab, so switching back
+  // restores that exact position instead of always jumping to the top.
+  const scrollPositions = useRef<Record<Tab, number>>({
+    "case-studies": 0,
+    "design-gallery": 0,
+  });
 
   function switchTab(next: Tab) {
+    if (next === activeTab) return;
+
+    // Save the position we're leaving before it changes.
+    scrollPositions.current[activeTab] = scrollRef.current?.scrollTop ?? 0;
+
     setDirection(TAB_ORDER.indexOf(next) > TAB_ORDER.indexOf(activeTab) ? 1 : -1);
     setActiveTab(next);
-    // Jump the panel to the top instantly — without this, switching from a
-    // tall scrolled-down tab to a short one leaves the view scrolled past
-    // the new (shorter) content, looking empty until it clamps.
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = 0;
-    }
-    // On mobile the page itself scrolls (this panel isn't its own
-    // scroll container there), so reset that too.
-    window.scrollTo(0, 0);
   }
+
+  // Runs after the new tab's content is actually in the DOM (unlike doing
+  // this inside switchTab, which would still see the OLD content's height
+  // and clamp the restore target incorrectly). No animation — instant jump.
+  useLayoutEffect(() => {
+    const restore = scrollPositions.current[activeTab];
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = restore;
+    }
+    window.scrollTo(0, restore);
+  }, [activeTab]);
 
   return (
     <div
