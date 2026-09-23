@@ -129,7 +129,7 @@ export default function HomeClient({
           </div>
         </div>
 
-        <AnimatePresence mode="wait" custom={direction} initial={false}>
+        <AnimatePresence mode="popLayout" custom={direction} initial={false}>
           <motion.div
             key={activeTab}
             custom={direction}
@@ -137,7 +137,10 @@ export default function HomeClient({
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.15, ease: "easeInOut" }}
+            transition={{
+              x: { type: "spring", stiffness: 500, damping: 35 },
+              opacity: { duration: 0.15 },
+            }}
           >
             {activeTab === "case-studies" ? (
               <CaseStudies />
