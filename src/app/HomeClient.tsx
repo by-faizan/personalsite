@@ -90,7 +90,7 @@ export default function HomeClient({
             </div>
           </div>
 
-          <div className="flex flex-col items-start justify-end pt-4">
+          <div className="flex flex-col items-start justify-end pt-[26px] lg:pt-4">
             <div className="flex flex-col items-start gap-2 pt-4 text-sm tracking-[-0.28px]">
               <h2 className="font-semibold leading-[1.5] text-[#949ca6]">
                 {copy.whoIHelpHeading}
