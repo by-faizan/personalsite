@@ -14,6 +14,9 @@ export default defineConfig({
   projectId,
   dataset,
   schema,
+  // Disable Studio's npm version-check on load — it can hang the whole
+  // Studio at "Loading..." in restricted/sandboxed network environments.
+  autoUpdates: false,
   plugins: [
     structureTool({ structure }),
     visionTool({ defaultApiVersion: apiVersion }),
