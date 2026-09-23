@@ -45,14 +45,27 @@ export default async function Page() {
 
   const galleryItems: ResolvedGalleryItem[] =
     sanityItems && sanityItems.length > 0
-      ? sanityItems.map((item) => ({
-          id: item._id,
-          title: item.title,
-          imageUrl: item.image ? urlFor(item.image).width(1868).height(1330).url() : undefined,
-          fit: item.fit ?? "cover",
-          bg: item.backgroundColorHex || "#313844",
-          imagePadding: item.imagePadding,
-        }))
+      ? sanityItems.map((item) => {
+          const fit = item.fit ?? "cover";
+          // "Cover" pre-crops to the card's aspect ratio server-side (smaller
+          // download, exact fill). "Contain" must NOT be pre-cropped — the
+          // full original image needs to reach the browser so object-contain
+          // + padding can show all of it, same as the Studio preview does.
+          const imageUrl = item.image
+            ? fit === "cover"
+              ? urlFor(item.image).width(1868).height(1330).url()
+              : urlFor(item.image).width(1868).url()
+            : undefined;
+
+          return {
+            id: item._id,
+            title: item.title,
+            imageUrl,
+            fit,
+            bg: item.backgroundColorHex || "#313844",
+            imagePadding: item.imagePadding,
+          };
+        })
       : FALLBACK_GALLERY_ITEMS;
 
   const copy = {
