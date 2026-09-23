@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import { DM_Mono } from "next/font/google";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 const dmMono = DM_Mono({ weight: "500", subsets: ["latin"] });
 
@@ -46,10 +46,20 @@ export default function HomeClient({
 }) {
   const [activeTab, setActiveTab] = useState<Tab>("case-studies");
   const [direction, setDirection] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   function switchTab(next: Tab) {
     setDirection(TAB_ORDER.indexOf(next) > TAB_ORDER.indexOf(activeTab) ? 1 : -1);
     setActiveTab(next);
+    // Jump the panel to the top instantly — without this, switching from a
+    // tall scrolled-down tab to a short one leaves the view scrolled past
+    // the new (shorter) content, looking empty until it clamps.
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+    // On mobile the page itself scrolls (this panel isn't its own
+    // scroll container there), so reset that too.
+    window.scrollTo(0, 0);
   }
 
   return (
@@ -113,7 +123,10 @@ export default function HomeClient({
         <SiteFooter className="hidden lg:flex" />
       </div>
 
-      <div className="relative min-h-[560px] w-full flex-1 overflow-y-auto bg-[#22272f] lg:h-full">
+      <div
+        ref={scrollRef}
+        className="relative min-h-[560px] w-full flex-1 overflow-y-auto bg-[#22272f] lg:h-full"
+      >
         <div className="sticky top-0 z-10 flex justify-center bg-[#22272f]/80 pb-1 pt-4 backdrop-blur-sm">
           <div className="flex items-center gap-1 rounded-full bg-[#333b47] p-1">
             <TabButton
