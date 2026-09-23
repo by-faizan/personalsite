@@ -22,18 +22,31 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Slowly slides the gradient text's colors across itself, shader-like —
-   same three colors, just in motion (used on the case study "Full Case
-   Study" link). */
+/* Wanders the gradient text's colors around itself, mesh/shader-like —
+   same three colors, irregular timing + both axes so it never reads as a
+   simple back-and-forth sweep (used on the case study "Full Case Study"
+   link; the arrow icon runs a synced SVG gradient animation alongside). */
 @keyframes gradient-flow {
-  to {
-    background-position: 300% 50%;
+  0% {
+    background-position: 0% 30%;
+  }
+  22% {
+    background-position: 70% 60%;
+  }
+  48% {
+    background-position: 25% 80%;
+  }
+  71% {
+    background-position: 90% 20%;
+  }
+  100% {
+    background-position: 10% 50%;
   }
 }
 
 .animate-gradient-flow {
-  background-size: 300% 100%;
-  animation: gradient-flow 6s linear infinite;
+  background-size: 300% 300%;
+  animation: gradient-flow 8s ease-in-out infinite;
 }
 
 /* Matches the overscroll/rubber-band gutter to the actual left/right

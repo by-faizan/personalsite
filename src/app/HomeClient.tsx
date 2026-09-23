@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import { DM_Mono } from "next/font/google";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 const dmMono = DM_Mono({ weight: "500", subsets: ["latin"] });
 
@@ -255,6 +255,8 @@ function CaseStudies() {
 }
 
 function CaseStudyCard({ item }: { item: CaseStudyItem }) {
+  const gradientId = `arrow-gradient-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
+
   return (
     <div className="flex w-full flex-col overflow-hidden rounded-2xl lg:h-[358px] lg:flex-row">
       <div className="relative flex aspect-[475/358] w-full shrink-0 items-center justify-center bg-[#313844] lg:h-full lg:w-[475px]">
@@ -290,7 +292,46 @@ function CaseStudyCard({ item }: { item: CaseStudyItem }) {
             >
               {item.linkLabel}
             </span>
-            <Image src="/arrow.svg" alt="" width={14} height={14} />
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="shrink-0"
+            >
+              <defs>
+                <linearGradient
+                  id={gradientId}
+                  gradientUnits="objectBoundingBox"
+                  x1="0"
+                  y1="0"
+                  x2="1"
+                  y2="0"
+                >
+                  <stop offset="0%" stopColor="rgb(207, 250, 157)" />
+                  <stop offset="52.404%" stopColor="rgb(255, 199, 200)" />
+                  <stop offset="100%" stopColor="rgb(157, 194, 250)" />
+                  <animateTransform
+                    attributeName="gradientTransform"
+                    type="translate"
+                    values="-1 0.3; 0.4 -0.2; -0.6 0.1; 0.9 -0.3; -1 0.3"
+                    keyTimes="0; 0.22; 0.48; 0.71; 1"
+                    dur="8s"
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keySplines="0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1"
+                  />
+                </linearGradient>
+              </defs>
+              <path
+                d="M5.25 2.91667L9.33333 7L5.25 11.0833"
+                stroke={`url(#${gradientId})`}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </a>
         </div>
 
