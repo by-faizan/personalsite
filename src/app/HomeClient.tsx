@@ -114,7 +114,7 @@ export default function HomeClient({
       </div>
 
       <div className="relative min-h-[560px] w-full flex-1 overflow-y-auto bg-[#22272f] lg:h-full">
-        <div className="sticky top-0 z-10 flex justify-center bg-[#22272f]/80 pb-1 pt-9 backdrop-blur-sm">
+        <div className="sticky top-0 z-10 flex justify-center bg-[#22272f]/80 pb-1 pt-4 backdrop-blur-sm">
           <div className="flex items-center gap-1 rounded-full bg-[#333b47] p-1">
             <TabButton
               label="Case Studies"
@@ -137,7 +137,7 @@ export default function HomeClient({
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ type: "spring", stiffness: 500, damping: 35 }}
+            transition={{ duration: 0.15, ease: "easeInOut" }}
           >
             {activeTab === "case-studies" ? (
               <CaseStudies />
