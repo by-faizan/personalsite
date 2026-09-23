@@ -138,7 +138,7 @@ export default function HomeClient({
             animate="center"
             exit="exit"
             transition={{
-              x: { type: "spring", stiffness: 500, damping: 35 },
+              x: { type: "spring", stiffness: 500, damping: 24 },
               opacity: { duration: 0.15 },
             }}
           >
