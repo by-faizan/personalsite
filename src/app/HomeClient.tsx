@@ -136,49 +136,52 @@ export default function HomeClient({
         <SiteFooter className="hidden lg:flex" />
       </div>
 
-      <motion.div
+      <div
         ref={scrollRef}
-        initial={{ y: 40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 500, damping: 24 }}
         className="relative min-h-[560px] w-full flex-1 overflow-y-auto bg-[#22272f] lg:h-full"
       >
-        <div className="sticky top-0 z-10 flex justify-center bg-[#22272f]/80 pb-1 pt-4 backdrop-blur-sm">
-          <div className="flex items-center gap-1 rounded-full bg-[#333b47] p-1">
-            <TabButton
-              label="Case Studies"
-              active={activeTab === "case-studies"}
-              onClick={() => switchTab("case-studies")}
-            />
-            <TabButton
-              label="Design Gallery"
-              active={activeTab === "design-gallery"}
-              onClick={() => switchTab("design-gallery")}
-            />
+        <motion.div
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 24 }}
+        >
+          <div className="sticky top-0 z-10 flex justify-center bg-[#22272f]/80 pb-1 pt-4 backdrop-blur-sm">
+            <div className="flex items-center gap-1 rounded-full bg-[#333b47] p-1">
+              <TabButton
+                label="Case Studies"
+                active={activeTab === "case-studies"}
+                onClick={() => switchTab("case-studies")}
+              />
+              <TabButton
+                label="Design Gallery"
+                active={activeTab === "design-gallery"}
+                onClick={() => switchTab("design-gallery")}
+              />
+            </div>
           </div>
-        </div>
 
-        <AnimatePresence mode="popLayout" custom={direction} initial={false}>
-          <motion.div
-            key={activeTab}
-            custom={direction}
-            variants={tabSlideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{
-              x: { type: "spring", stiffness: 500, damping: 24 },
-              opacity: { duration: 0.15 },
-            }}
-          >
-            {activeTab === "case-studies" ? (
-              <CaseStudies />
-            ) : (
-              <DesignGallery items={galleryItems} />
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
+          <AnimatePresence mode="popLayout" custom={direction} initial={false}>
+            <motion.div
+              key={activeTab}
+              custom={direction}
+              variants={tabSlideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 500, damping: 24 },
+                opacity: { duration: 0.15 },
+              }}
+            >
+              {activeTab === "case-studies" ? (
+                <CaseStudies />
+              ) : (
+                <DesignGallery items={galleryItems} />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
+      </div>
 
       <SiteFooter className="flex lg:hidden" />
     </div>
