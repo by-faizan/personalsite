@@ -136,8 +136,11 @@ export default function HomeClient({
         <SiteFooter className="hidden lg:flex" />
       </div>
 
-      <div
+      <motion.div
         ref={scrollRef}
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 500, damping: 24 }}
         className="relative min-h-[560px] w-full flex-1 overflow-y-auto bg-[#22272f] lg:h-full"
       >
         <div className="sticky top-0 z-10 flex justify-center bg-[#22272f]/80 pb-1 pt-4 backdrop-blur-sm">
@@ -175,7 +178,7 @@ export default function HomeClient({
             )}
           </motion.div>
         </AnimatePresence>
-      </div>
+      </motion.div>
 
       <SiteFooter className="flex lg:hidden" />
     </div>
