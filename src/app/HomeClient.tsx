@@ -3,6 +3,7 @@
 import Image from "next/image";
 import {
   motion,
+  type MotionValue,
   useMotionValue,
   useReducedMotion,
   useTransform,
@@ -343,27 +344,70 @@ function StageCard({ stage }: { stage: Stage }) {
   );
 }
 
+function useMinWidth(px: number) {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia(`(min-width: ${px}px)`);
+    const update = () => setMatches(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, [px]);
+
+  return matches;
+}
+
+// How far (px, each way) an element drifts as the section scrolls past. Offsets
+// are zero at the middle of the pass, where everything sits as designed.
+//
+// Zig-zag: limited by the gaps in the left column (card 1 -> heading is 63px,
+// heading -> card 3 is 101px), so the whole left column drifts the same way at
+// graded speeds, and card 2 (alone in the right column, so free to move)
+// travels the furthest.
+const ZIGZAG_AMPLITUDES = { heading: 200, cards: [260, 420, 240] };
+// Stacked: neighbours are 64px apart and each element drifts at most ~40px
+// more than the one above it, so they can't touch.
+const STACKED_AMPLITUDES = { heading: 60, cards: [140, 220, 300] };
+
+function ParallaxItem({
+  progress,
+  amplitude,
+  enabled,
+  className,
+  style,
+  children,
+}: {
+  progress: MotionValue<number>;
+  amplitude: number;
+  enabled: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}) {
+  const y = useTransform(progress, [0, 1], [amplitude, -amplitude]);
+
+  return (
+    <motion.div className={className} style={{ ...style, ...(enabled ? { y } : {}) }}>
+      {children}
+    </motion.div>
+  );
+}
+
 function ProcessSection() {
   const ref = useRef<HTMLDivElement>(null);
   const width = useElementWidth(ref);
   // The zig-zag is laid out for a 934px canvas; below that it stacks.
   const wide = width >= 896;
   const reduceMotion = useReducedMotion();
-  const parallax = wide && !reduceMotion;
+  // Parallax everywhere except phones.
+  const tabletUp = useMinWidth(768);
+  const parallax = tabletUp && !reduceMotion;
+  const amplitudes = wide ? ZIGZAG_AMPLITUDES : STACKED_AMPLITUDES;
 
   // 0 = section just entering the bottom of the viewport, 1 = just leaving the
-  // top. At 0.5 every card sits exactly where the design puts it.
-  //
-  // Amplitudes are limited by the gaps in the left column (card 1 -> heading
-  // is 63px, heading -> card 3 is 101px), so the whole left column drifts the
-  // same way at graded speeds (heading slowest, then card 1, then card 3), and
-  // card 2 (alone in the right column, so free to move) travels the furthest.
+  // top.
   const progress = useMotionValue(0.5);
-  const y1 = useTransform(progress, [0, 1], [90, -90]);
-  const y2 = useTransform(progress, [0, 1], [170, -170]);
-  const y3 = useTransform(progress, [0, 1], [95, -95]);
-  const yHeading = useTransform(progress, [0, 1], [40, -40]);
-  const ys = [y1, y2, y3];
 
   useEffect(() => {
     if (!parallax) return;
@@ -409,34 +453,49 @@ function ProcessSection() {
         >
           {wide ? (
             <>
-              <motion.div
+              <ParallaxItem
+                key="zigzag-heading"
+                progress={progress}
+                amplitude={amplitudes.heading}
+                enabled={parallax}
                 className="absolute w-[231px]"
-                style={{
-                  left: 62,
-                  top: 439.25,
-                  ...(parallax ? { y: yHeading } : {}),
-                }}
+                style={{ left: 62, top: 439.25 }}
               >
                 {heading}
-              </motion.div>
+              </ParallaxItem>
               {STAGES.map((stage, i) => (
-                <motion.div
-                  key={stage.tag}
+                <ParallaxItem
+                  key={`zigzag-${stage.tag}`}
+                  progress={progress}
+                  amplitude={amplitudes.cards[i]}
+                  enabled={parallax}
                   className="absolute w-[368px]"
-                  style={{
-                    ...STAGE_POSITIONS[i],
-                    ...(parallax ? { y: ys[i] } : {}),
-                  }}
+                  style={STAGE_POSITIONS[i]}
                 >
                   <StageCard stage={stage} />
-                </motion.div>
+                </ParallaxItem>
               ))}
             </>
           ) : (
-            <div className="flex flex-col gap-4 pb-2 pt-10">
-              <div className="mb-2 max-w-[231px]">{heading}</div>
-              {STAGES.map((stage) => (
-                <StageCard key={stage.tag} stage={stage} />
+            <div className="flex flex-col gap-4 pb-2 pt-10 md:gap-20">
+              <ParallaxItem
+                key="stacked-heading"
+                progress={progress}
+                amplitude={amplitudes.heading}
+                enabled={parallax}
+                className="max-w-[231px]"
+              >
+                {heading}
+              </ParallaxItem>
+              {STAGES.map((stage, i) => (
+                <ParallaxItem
+                  key={`stacked-${stage.tag}`}
+                  progress={progress}
+                  amplitude={amplitudes.cards[i]}
+                  enabled={parallax}
+                >
+                  <StageCard stage={stage} />
+                </ParallaxItem>
               ))}
             </div>
           )}
