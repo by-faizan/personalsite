@@ -355,13 +355,13 @@ function ProcessSection() {
   // top. At 0.5 every card sits exactly where the design puts it.
   //
   // Amplitudes are limited by the gaps in the left column (card 1 -> heading
-  // is 63px, heading -> card 3 is 101px): card 1 and the heading drift the same
-  // way, card 3 drifts against them, and card 2 (alone in the right column,
-  // so free to move) travels the furthest.
+  // is 63px, heading -> card 3 is 101px), so the whole left column drifts the
+  // same way at graded speeds (heading slowest, then card 1, then card 3), and
+  // card 2 (alone in the right column, so free to move) travels the furthest.
   const progress = useMotionValue(0.5);
   const y1 = useTransform(progress, [0, 1], [90, -90]);
   const y2 = useTransform(progress, [0, 1], [170, -170]);
-  const y3 = useTransform(progress, [0, 1], [-45, 45]);
+  const y3 = useTransform(progress, [0, 1], [95, -95]);
   const yHeading = useTransform(progress, [0, 1], [40, -40]);
   const ys = [y1, y2, y3];
 
