@@ -31,6 +31,23 @@ export const siteSettings = defineType({
       type: "string",
       initialValue: "Who I help?",
     }),
+    defineField({
+      name: "whoIHelpAudience",
+      title: "Who I help — audience (white text)",
+      description: "e.g. “Early-Stage SaaS & AI Startups”",
+      type: "string",
+      initialValue: "Early-Stage SaaS & AI Startups",
+    }),
+    defineField({
+      name: "whoIHelpDescription",
+      title: "Who I help — description (grey text)",
+      description:
+        "Continues the sentence after the audience, e.g. “who want to become more credible…”",
+      type: "text",
+      rows: 3,
+      initialValue:
+        "who want to become more credible and don\u2019t have 3 months to wait for their new direction & website",
+    }),
   ],
   preview: {
     select: { title: "heroHeadline" },

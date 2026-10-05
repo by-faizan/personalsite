@@ -16,6 +16,8 @@ export const SITE_SETTINGS_QUERY = defineQuery(
     heroHeadline,
     heroSubheadline,
     ctaLabel,
-    whoIHelpHeading
+    whoIHelpHeading,
+    whoIHelpAudience,
+    whoIHelpDescription
   }`
 );

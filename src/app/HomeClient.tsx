@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   motion,
   type MotionValue,
@@ -8,16 +9,16 @@ import {
   useReducedMotion,
   useTransform,
 } from "motion/react";
+import {
+  CTA_INTERACTION,
+  DEFAULT_WHO_I_HELP,
+  MAILTO,
+  type WhoIHelp,
+} from "./shared";
 import { useEffect, useId, useRef, useState, type RefObject } from "react";
-
-const MAILTO =
-  "mailto:faizanmotionss@gmail.com?subject=Marketing%20website%20inquiry";
 
 const GRADIENT_BG =
   "linear-gradient(90deg, rgb(207, 250, 157) 0%, rgb(255, 199, 200) 52.404%, rgb(157, 194, 250) 100%)";
-
-const CTA_INTERACTION =
-  "cursor-pointer select-none bg-[#2a7bf4] font-medium text-white transition-[background-color,transform] duration-200 ease-out hover:scale-[1.03] hover:bg-[#428af5] active:scale-[0.97] active:bg-[#0d69f2]";
 
 function useElementWidth(ref: RefObject<HTMLElement | null>) {
   const [width, setWidth] = useState(0);
@@ -35,7 +36,11 @@ function useElementWidth(ref: RefObject<HTMLElement | null>) {
   return width;
 }
 
-export default function HomeClient() {
+export default function HomeClient({
+  whoIHelp = DEFAULT_WHO_I_HELP,
+}: {
+  whoIHelp?: WhoIHelp;
+}) {
   return (
     <div className="flex min-h-screen w-full flex-col items-start bg-[#333b47] lg:h-screen lg:flex-row lg:overflow-hidden">
       <div className="flex w-full shrink-0 flex-col overflow-hidden lg:h-full lg:w-[458px] lg:border-r lg:border-[#22272f]">
@@ -77,14 +82,11 @@ export default function HomeClient() {
           <div className="flex flex-col items-start justify-end pt-[26px] lg:pt-4">
             <div className="flex w-full flex-col items-start gap-2 pt-4 text-sm tracking-[-0.28px]">
               <h2 className="font-semibold leading-[1.5] text-[#949ca6]">
-                Who I help?
+                {whoIHelp.heading}
               </h2>
               <p className="font-medium leading-[1.5] text-white">
-                Early-Stage SaaS &amp; AI Startups{" "}
-                <span className="text-[#949ca6]">
-                  who want to become more credible and don&rsquo;t have 3
-                  months to wait for their new direction &amp; website
-                </span>
+                {whoIHelp.audience}{" "}
+                <span className="text-[#949ca6]">{whoIHelp.description}</span>
               </p>
             </div>
           </div>
@@ -133,11 +135,20 @@ function SiteFooter({ className = "" }: { className?: string }) {
 }
 
 /* Gradient text + chevron that drift through the same three colors together. */
-function GradientLink({ label, href = "#" }: { label: string; href?: string }) {
+export function GradientLink({
+  label,
+  href = "#",
+}: {
+  label: string;
+  href?: string;
+}) {
   const gradientId = `arrow-gradient-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
 
   return (
-    <a href={href} className="inline-flex w-fit select-none items-center gap-1">
+    <Link
+      href={href}
+      className="inline-flex w-fit select-none items-center gap-1"
+    >
       <span
         className="animate-gradient-flow bg-clip-text text-xs font-medium leading-4 tracking-[-0.24px] text-transparent"
         style={{ backgroundImage: GRADIENT_BG }}
@@ -185,7 +196,7 @@ function GradientLink({ label, href = "#" }: { label: string; href?: string }) {
           strokeLinejoin="round"
         />
       </svg>
-    </a>
+    </Link>
   );
 }
 
@@ -198,7 +209,10 @@ function Checklist({ label, items }: { label: string; items: string[] }) {
       <ul className="flex flex-col gap-[6px] text-white">
         {items.map((item) => (
           <li key={item} className="flex items-start gap-1">
-            <span aria-hidden className="shrink-0 text-[14.328px] leading-normal">
+            <span
+              aria-hidden
+              className="shrink-0 text-[14.328px] leading-normal"
+            >
               ✓
             </span>
             <span className="min-w-0 flex-1 text-[14px] font-medium leading-[1.6] tracking-[-0.28px]">
@@ -218,23 +232,19 @@ type CaseStudy = {
   title: string;
   description: string;
   linkLabel: string;
+  href: string;
+  video?: string;
 };
-
-const CASE_STUDY_DESCRIPTION =
-  "The current Look of the brand & website was not credible enough to close B2B deals and the brand so we ran our Brand & Homepage sprint";
 
 const CASE_STUDIES: CaseStudy[] = [
   {
     tag: "Brand + Homepage",
     title: "ormedo tech - AI-powered outbound sales",
-    description: CASE_STUDY_DESCRIPTION,
-    linkLabel: "Full Case Study (coming soon)",
-  },
-  {
-    tag: "Brand + Homepage",
-    title: "Flowpilot - AI-powered outbound sales",
-    description: CASE_STUDY_DESCRIPTION,
-    linkLabel: "Full Case Study (coming soon)",
+    description:
+      "Refreshed the Brand & Homepage for Ormedo tech to increase credibility in b2B space. This sprint focuses on solving core messaging, information architecture, and trust issues for a B2B AI sales product. By humanizing technology and clarifying the value proposition, the project transforms an unstructured page into an engaging product showcase with a personality",
+    linkLabel: "Full Case study",
+    href: "/case-studies/ormedo-tech",
+    video: "/videos/ormedo-tech.mp4",
   },
 ];
 
@@ -253,7 +263,20 @@ function CaseStudies() {
 function CaseStudyCard({ item }: { item: CaseStudy }) {
   return (
     <article className="flex w-full flex-col gap-4">
-      <div className="aspect-[1920/1080] w-full bg-[#333b47]" />
+      <div className="aspect-[1920/1080] w-full overflow-hidden bg-[#333b47]">
+        {item.video && (
+          <video
+            src={item.video}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            aria-hidden
+            className="size-full object-cover"
+          />
+        )}
+      </div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-end sm:gap-3">
         <div className="flex flex-col items-start gap-2 sm:min-w-0 sm:flex-1">
           <p className="w-fit whitespace-nowrap rounded-[14px] border border-[#5c6a7f] px-1 py-0.5 text-[12px] font-medium leading-[1.3] tracking-[-0.12px] text-[#8f9bae]">
@@ -264,10 +287,10 @@ function CaseStudyCard({ item }: { item: CaseStudy }) {
           </h2>
         </div>
         <div className="flex flex-col items-start gap-3 sm:w-[258px] sm:shrink-0">
-          <p className="text-[12px] font-medium leading-[1.3] tracking-[-0.24px] text-[#949ca6]">
+          <p className="line-clamp-3 text-[12px] font-medium leading-[1.3] tracking-[-0.24px] text-[#949ca6]">
             {item.description}
           </p>
-          <GradientLink label={item.linkLabel} />
+          <GradientLink label={item.linkLabel} href={item.href} />
         </div>
       </div>
     </article>
@@ -388,7 +411,10 @@ function ParallaxItem({
   const y = useTransform(progress, [0, 1], [amplitude, -amplitude]);
 
   return (
-    <motion.div className={className} style={{ ...style, ...(enabled ? { y } : {}) }}>
+    <motion.div
+      className={className}
+      style={{ ...style, ...(enabled ? { y } : {}) }}
+    >
       {children}
     </motion.div>
   );
@@ -429,7 +455,10 @@ function ProcessSection() {
     update();
     // Capture phase so it also fires for the inner scroll panel on desktop
     // (scroll events don't bubble) as well as the window on mobile.
-    window.addEventListener("scroll", onScroll, { capture: true, passive: true });
+    window.addEventListener("scroll", onScroll, {
+      capture: true,
+      passive: true,
+    });
     window.addEventListener("resize", onScroll);
     return () => {
       if (frame) cancelAnimationFrame(frame);
@@ -529,20 +558,22 @@ function InvestmentSection() {
         [ Your investment ]
       </h2>
 
-      <div className={row ? "flex items-start gap-[82px]" : "flex flex-col gap-8"}>
+      <div
+        className={row ? "flex items-start gap-[82px]" : "flex flex-col gap-8"}
+      >
         <div
           className={`flex flex-col gap-3 ${row ? "w-[274px] shrink-0" : "max-w-[420px]"}`}
         >
           <h3
-            className="animate-gradient-flow bg-clip-text text-[36.219px] font-medium capitalize leading-[1.2] tracking-[-1.4488px] text-transparent"
+            className="animate-gradient-flow bg-clip-text text-[32px] font-medium capitalize leading-[1.04] tracking-[-1.28px] text-transparent"
             style={{ backgroundImage: GRADIENT_BG }}
           >
-            Homepage Sprint
+            Brand &amp; Homepage Refresh Sprint
           </h3>
           <p className="text-[12px] font-medium leading-[1.3] tracking-[-0.24px] text-[#949ca6]">
             A focused 3-week intensive to overhaul your visual identity, lock
-            down your core business narrative, and deploy a world-class
-            homepage that drives revenue.
+            down your core business narrative, and deploy a world-class homepage
+            that drives revenue.
           </p>
           <a
             href={MAILTO}

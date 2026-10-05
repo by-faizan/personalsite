@@ -17,6 +17,8 @@ export type SiteSettings = {
   heroSubheadline?: string;
   ctaLabel?: string;
   whoIHelpHeading?: string;
+  whoIHelpAudience?: string;
+  whoIHelpDescription?: string;
 };
 
 export async function getGalleryProjects(): Promise<GalleryProject[] | null> {
